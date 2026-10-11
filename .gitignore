@@ -1,0 +1,43 @@
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Windows Junctions & External Data Directories
+data/
+apps/
+pg.log
+*.log
+
+# Large Datasets & Raw Imaging Data
+models/imaging/data/
+HELIX_Models/
+
+# Python Cache & Testing
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Node.js & Frontend Builds
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+dist/
+
+# Local Environment Variables & Secrets
+.env
+backend/.env
+*.env.local
+
+# IDE & OS Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

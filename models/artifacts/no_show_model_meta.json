@@ -1,0 +1,529 @@
+{
+  "model_name": "AppointmentNoShowPredictor",
+  "version": "v1.20261011204859",
+  "trained_at": "2026-10-11T15:18:59.020965+00:00",
+  "split_method": "temporal",
+  "sample_size": 1491,
+  "train_size": 1192,
+  "test_size": 299,
+  "base_candidate": "logistic_regression",
+  "calibration_method": "Platt Scaling (Sigmoid)",
+  "benchmark_comparison": {
+    "dummy_prior": {
+      "accuracy": 0.7224,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "roc_auc": 0.5,
+      "pr_auc": 0.2776,
+      "brier_score": 0.203,
+      "confusion_matrix": {
+        "tn": 216,
+        "fp": 0,
+        "fn": 83,
+        "tp": 0
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "pr_curve": [
+        {
+          "precision": 0.2776,
+          "recall": 1.0
+        },
+        {
+          "precision": 1.0,
+          "recall": 0.0
+        }
+      ]
+    },
+    "logistic_regression": {
+      "accuracy": 0.3411,
+      "precision": 0.2935,
+      "recall": 0.9759,
+      "f1_score": 0.4513,
+      "roc_auc": 0.4989,
+      "pr_auc": 0.2668,
+      "brier_score": 0.2859,
+      "confusion_matrix": {
+        "tn": 21,
+        "fp": 195,
+        "fn": 2,
+        "tp": 81
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.0926,
+          "tpr": 0.0723
+        },
+        {
+          "fpr": 0.1481,
+          "tpr": 0.1205
+        },
+        {
+          "fpr": 0.2361,
+          "tpr": 0.1928
+        },
+        {
+          "fpr": 0.3611,
+          "tpr": 0.2771
+        },
+        {
+          "fpr": 0.4074,
+          "tpr": 0.3494
+        },
+        {
+          "fpr": 0.4722,
+          "tpr": 0.4096
+        },
+        {
+          "fpr": 0.5093,
+          "tpr": 0.494
+        },
+        {
+          "fpr": 0.5417,
+          "tpr": 0.5783
+        },
+        {
+          "fpr": 0.5648,
+          "tpr": 0.6747
+        },
+        {
+          "fpr": 0.7083,
+          "tpr": 0.7349
+        },
+        {
+          "fpr": 0.7731,
+          "tpr": 0.8072
+        },
+        {
+          "fpr": 0.838,
+          "tpr": 0.8675
+        },
+        {
+          "fpr": 0.8889,
+          "tpr": 0.9398
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "pr_curve": [
+        {
+          "precision": 0.2776,
+          "recall": 1.0
+        },
+        {
+          "precision": 0.2914,
+          "recall": 0.9759
+        },
+        {
+          "precision": 0.2879,
+          "recall": 0.8916
+        },
+        {
+          "precision": 0.2851,
+          "recall": 0.8072
+        },
+        {
+          "precision": 0.285,
+          "recall": 0.7349
+        },
+        {
+          "precision": 0.3109,
+          "recall": 0.7229
+        },
+        {
+          "precision": 0.3041,
+          "recall": 0.6265
+        },
+        {
+          "precision": 0.2667,
+          "recall": 0.4819
+        },
+        {
+          "precision": 0.2403,
+          "recall": 0.3735
+        },
+        {
+          "precision": 0.2336,
+          "recall": 0.3012
+        },
+        {
+          "precision": 0.2093,
+          "recall": 0.2169
+        },
+        {
+          "precision": 0.2308,
+          "recall": 0.1807
+        },
+        {
+          "precision": 0.2558,
+          "recall": 0.1325
+        },
+        {
+          "precision": 0.1818,
+          "recall": 0.0482
+        },
+        {
+          "precision": 1.0,
+          "recall": 0.0
+        }
+      ]
+    },
+    "xgboost_trees": {
+      "accuracy": 0.709,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "roc_auc": 0.4957,
+      "pr_auc": 0.2647,
+      "brier_score": 0.2122,
+      "confusion_matrix": {
+        "tn": 212,
+        "fp": 4,
+        "fn": 83,
+        "tp": 0
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.0926,
+          "tpr": 0.0482
+        },
+        {
+          "fpr": 0.1343,
+          "tpr": 0.1084
+        },
+        {
+          "fpr": 0.213,
+          "tpr": 0.1687
+        },
+        {
+          "fpr": 0.2731,
+          "tpr": 0.2289
+        },
+        {
+          "fpr": 0.3519,
+          "tpr": 0.2892
+        },
+        {
+          "fpr": 0.4398,
+          "tpr": 0.3976
+        },
+        {
+          "fpr": 0.5185,
+          "tpr": 0.4699
+        },
+        {
+          "fpr": 0.5556,
+          "tpr": 0.5422
+        },
+        {
+          "fpr": 0.625,
+          "tpr": 0.6145
+        },
+        {
+          "fpr": 0.6574,
+          "tpr": 0.6867
+        },
+        {
+          "fpr": 0.7083,
+          "tpr": 0.747
+        },
+        {
+          "fpr": 0.7917,
+          "tpr": 0.8434
+        },
+        {
+          "fpr": 0.8519,
+          "tpr": 0.9398
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ],
+      "pr_curve": [
+        {
+          "precision": 0.2776,
+          "recall": 1.0
+        },
+        {
+          "precision": 0.2903,
+          "recall": 0.9759
+        },
+        {
+          "precision": 0.2973,
+          "recall": 0.9277
+        },
+        {
+          "precision": 0.2888,
+          "recall": 0.8072
+        },
+        {
+          "precision": 0.2938,
+          "recall": 0.747
+        },
+        {
+          "precision": 0.2827,
+          "recall": 0.6506
+        },
+        {
+          "precision": 0.2781,
+          "recall": 0.5663
+        },
+        {
+          "precision": 0.2568,
+          "recall": 0.4578
+        },
+        {
+          "precision": 0.2578,
+          "recall": 0.3976
+        },
+        {
+          "precision": 0.2336,
+          "recall": 0.3012
+        },
+        {
+          "precision": 0.2471,
+          "recall": 0.253
+        },
+        {
+          "precision": 0.2308,
+          "recall": 0.1807
+        },
+        {
+          "precision": 0.2439,
+          "recall": 0.1205
+        },
+        {
+          "precision": 0.1429,
+          "recall": 0.0361
+        },
+        {
+          "precision": 1.0,
+          "recall": 0.0
+        }
+      ]
+    }
+  },
+  "calibration": {
+    "uncalibrated_brier": 0.2859,
+    "calibrated_brier": 0.2076,
+    "uncalibrated_curve": [
+      {
+        "bin": 1,
+        "mean_predicted_prob": 0.4789,
+        "empirical_fraction_positive": 0.087
+      },
+      {
+        "bin": 2,
+        "mean_predicted_prob": 0.5636,
+        "empirical_fraction_positive": 0.3004
+      },
+      {
+        "bin": 3,
+        "mean_predicted_prob": 0.6489,
+        "empirical_fraction_positive": 0.2424
+      }
+    ],
+    "calibrated_curve": [
+      {
+        "bin": 1,
+        "mean_predicted_prob": 0.2034,
+        "empirical_fraction_positive": 0.2795
+      },
+      {
+        "bin": 2,
+        "mean_predicted_prob": 0.2567,
+        "empirical_fraction_positive": 0.0
+      }
+    ]
+  },
+  "feature_weights": [
+    {
+      "feature": "prior_appointments",
+      "logistic_coef": 0.3007,
+      "odds_ratio": 1.3508,
+      "tree_importance": 0.058
+    },
+    {
+      "feature": "prior_no_shows",
+      "logistic_coef": -0.1914,
+      "odds_ratio": 0.8258,
+      "tree_importance": 0.0431
+    },
+    {
+      "feature": "prior_no_show_rate",
+      "logistic_coef": 0.1366,
+      "odds_ratio": 1.1464,
+      "tree_importance": 0.0545
+    },
+    {
+      "feature": "department_name_Orthopedics",
+      "logistic_coef": -0.1112,
+      "odds_ratio": 0.8947,
+      "tree_importance": 0.0455
+    },
+    {
+      "feature": "department_name_Pediatrics-893207",
+      "logistic_coef": 0.1091,
+      "odds_ratio": 1.1153,
+      "tree_importance": 0.0713
+    },
+    {
+      "feature": "gender_Male",
+      "logistic_coef": -0.1045,
+      "odds_ratio": 0.9008,
+      "tree_importance": 0.0379
+    },
+    {
+      "feature": "gender_Female",
+      "logistic_coef": 0.0981,
+      "odds_ratio": 1.1031,
+      "tree_importance": 0.0604
+    },
+    {
+      "feature": "is_afternoon",
+      "logistic_coef": -0.0837,
+      "odds_ratio": 0.9197,
+      "tree_importance": 0.0301
+    },
+    {
+      "feature": "day_of_week",
+      "logistic_coef": -0.0776,
+      "odds_ratio": 0.9254,
+      "tree_importance": 0.0541
+    },
+    {
+      "feature": "is_weekend",
+      "logistic_coef": 0.0619,
+      "odds_ratio": 1.0638,
+      "tree_importance": 0.075
+    },
+    {
+      "feature": "department_name_General Medicine",
+      "logistic_coef": 0.0546,
+      "odds_ratio": 1.0561,
+      "tree_importance": 0.0536
+    },
+    {
+      "feature": "department_name_Cardiology",
+      "logistic_coef": -0.0522,
+      "odds_ratio": 0.9492,
+      "tree_importance": 0.0474
+    },
+    {
+      "feature": "existing_diagnoses_count",
+      "logistic_coef": -0.036,
+      "odds_ratio": 0.9646,
+      "tree_importance": 0.0432
+    },
+    {
+      "feature": "prior_cancellations",
+      "logistic_coef": -0.0285,
+      "odds_ratio": 0.9719,
+      "tree_importance": 0.0572
+    },
+    {
+      "feature": "lead_time_days",
+      "logistic_coef": 0.013,
+      "odds_ratio": 1.0131,
+      "tree_importance": 0.0592
+    }
+  ],
+  "fairness_audit": {
+    "age_subgroups": [
+      {
+        "count": 161,
+        "actual_no_show_rate": 0.2919,
+        "selection_rate": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "accuracy": 0.7081,
+        "precision": 0.0,
+        "recall": 0.0,
+        "group": "18 - 35"
+      },
+      {
+        "count": 49,
+        "actual_no_show_rate": 0.1837,
+        "selection_rate": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "accuracy": 0.8163,
+        "precision": 0.0,
+        "recall": 0.0,
+        "group": "36 - 50"
+      },
+      {
+        "count": 56,
+        "actual_no_show_rate": 0.3214,
+        "selection_rate": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "accuracy": 0.6786,
+        "precision": 0.0,
+        "recall": 0.0,
+        "group": "51 - 65"
+      },
+      {
+        "count": 33,
+        "actual_no_show_rate": 0.2727,
+        "selection_rate": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "accuracy": 0.7273,
+        "precision": 0.0,
+        "recall": 0.0,
+        "group": "65+"
+      }
+    ],
+    "gender_subgroups": [
+      {
+        "count": 167,
+        "actual_no_show_rate": 0.3293,
+        "selection_rate": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "accuracy": 0.6707,
+        "precision": 0.0,
+        "recall": 0.0,
+        "group": "Male"
+      },
+      {
+        "count": 132,
+        "actual_no_show_rate": 0.2121,
+        "selection_rate": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "accuracy": 0.7879,
+        "precision": 0.0,
+        "recall": 0.0,
+        "group": "Female"
+      }
+    ],
+    "summary": {
+      "gender_demographic_parity_ratio": 1.0,
+      "age_demographic_parity_ratio": 1.0,
+      "gender_fpr_disparity": 0.0,
+      "gender_fnr_disparity": 0.0
+    }
+  }
+}

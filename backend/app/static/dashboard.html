@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-HMS | Operational Intelligence Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-base: #0a0f1d;
+            --bg-surface: #111827;
+            --bg-card: rgba(17, 24, 39, 0.75);
+            --bg-card-hover: rgba(30, 41, 59, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(59, 130, 246, 0.35);
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+            --accent-cyan: #06b6d4;
+            --accent-indigo: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --purple: #a855f7;
+
+            --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.5;
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(168, 85, 247, 0.10) 0%, transparent 35%),
+                radial-gradient(circle at 50% 90%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Container */
+        .dashboard-container {
+            max-width: 1540px;
+            margin: 0 auto;
+            padding: 28px 32px 60px 32px;
+        }
+
+        /* Header Bar */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .brand-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+        }
+
+        .brand-title h1 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #ffffff, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-title p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-live {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 9999px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge-live::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        /* Quick Auth / Switcher Bar */
+        .auth-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-surface);
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .role-tag {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .role-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .role-btn:hover {
+            background: rgba(59, 130, 246, 0.15);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .role-btn.active {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-glow);
+            box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .kpi-wait::before { background: var(--accent-cyan); }
+        .kpi-noshow::before { background: var(--danger); }
+        .kpi-util::before { background: var(--success); }
+        .kpi-volume::before { background: var(--purple); }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .kpi-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .kpi-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .kpi-value {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+
+        .kpi-subtext {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* Benchmark Banner */
+        .baseline-banner {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .baseline-info h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .baseline-info p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .baseline-metrics {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .metric-pill {
+            text-align: right;
+        }
+
+        .metric-pill-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .metric-pill-val {
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+        }
+
+        /* Charts Layout */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .charts-row-equal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 1024px) {
+            .charts-row, .charts-row-equal {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .chart-badge {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+        }
+
+        .chart-body {
+            position: relative;
+            flex: 1;
+            min-height: 280px;
+        }
+
+        /* Tables & Lists */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.83rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 14px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-subtle);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .doctor-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header>
+            <div class="brand-block">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                    </svg>
+                </div>
+                <div class="brand-title">
+                    <h1>AI-HMS Operational Intelligence</h1>
+                    <p>PostgreSQL 18 SQL-Backed Clinical Analytics <span class="badge-live">Live Baseline Active</span></p>
+                </div>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="auth-bar">
+                <span class="role-tag">Active Role:</span>
+                <button class="role-btn active" onclick="switchUser('admin@hospital.com', 'Admin@123', 'ADMIN', this)">ADMIN</button>
+                <button class="role-btn" onclick="switchUser('doctor@hospital.com', 'Doctor@123', 'DOCTOR', this)">DOCTOR</button>
+                <button class="role-btn" onclick="switchUser('nurse@hospital.com', 'Nurse@123', 'NURSE', this)">NURSE</button>
+            </div>
+        </header>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+            <!-- Wait Times -->
+            <div class="kpi-card kpi-wait">
+                <div class="kpi-header">
+                    <span class="kpi-title">Avg Waiting Time</span>
+                    <div class="kpi-icon" style="color: var(--accent-cyan);">⏱️</div>
+                </div>
+                <div class="kpi-value" id="kpi-wait-time">-- <span style="font-size: 1rem; color: var(--text-muted);">min</span></div>
+                <div class="kpi-subtext">
+                    Median: <span class="pill" id="kpi-median-wait">--</span>
+                    P90: <span class="pill" id="kpi-p90-wait">--</span>
+                </div>
+            </div>
+
+            <!-- No-Show Rate -->
+            <div class="kpi-card kpi-noshow">
+                <div class="kpi-header">
+                    <span class="kpi-title">No-Show Rate</span>
+                    <div class="kpi-icon" style="color: var(--danger);">🚫</div>
+                </div>
+                <div class="kpi-value" id="kpi-noshow-rate">--%</div>
+                <div class="kpi-subtext">
+                    Count: <span class="pill" id="kpi-noshow-count">--</span>
+                    Target w/ AI: <span class="pill" style="color: var(--success); font-weight: 700;" id="kpi-noshow-target">--</span>
+                </div>
+            </div>
+
+            <!-- Utilization -->
+            <div class="kpi-card kpi-util">
+                <div class="kpi-header">
+                    <span class="kpi-title">Slot Capacity Utilization</span>
+                    <div class="kpi-icon" style="color: var(--success);">📈</div>
+                </div>
+                <div class="kpi-value" id="kpi-utilization-rate">--%</div>
+                <div class="kpi-subtext">
+                    Fulfilled: <span class="pill" id="kpi-completed-count">--</span>
+                    Scheduled: <span class="pill" id="kpi-scheduled-count">--</span>
+                </div>
+            </div>
+
+            <!-- Total Volume & Cancellations -->
+            <div class="kpi-card kpi-volume">
+                <div class="kpi-header">
+                    <span class="kpi-title">Total Appointments</span>
+                    <div class="kpi-icon" style="color: var(--purple);">📋</div>
+                </div>
+                <div class="kpi-value" id="kpi-total-volume">--</div>
+                <div class="kpi-subtext">
+                    Cancellations: <span class="pill" id="kpi-cancel-rate">--%</span>
+                    Avg Duration: <span class="pill" id="kpi-avg-duration">-- min</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pre-AI Baseline Banner -->
+        <div class="baseline-banner">
+            <div class="baseline-info">
+                <h3>🏛️ Pre-AI Operational Baseline Established</h3>
+                <p>Formal pre-intervention benchmark across 90-day historical cohort (<span id="baseline-cohort-size">1,804</span> appointments).</p>
+            </div>
+            <div class="baseline-metrics">
+                <div class="metric-pill">
+                    <div class="metric-pill-label">Baseline No-Show</div>
+                    <div class="metric-pill-val" id="base-noshow-val">--%</div>
+                </div>
+                <div class="metric-pill">
+                    <div class="metric-pill-label">Baseline Wait</div>
+                    <div class="metric-pill-val" id="base-wait-val">-- min</div>
+                </div>
+                <div class="metric-pill">
+                    <div class="metric-pill-label">Projected AI Gain</div>
+                    <div class="metric-pill-val" style="color: var(--success);">-30% No-Shows</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row 1: Wait times by department + Outcomes breakdown -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span class="chart-title">Department Waiting Time Analysis (Minutes)</span>
+                    <span class="chart-badge">Mean & P90</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="deptWaitChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span class="chart-title">Appointment Outcome Distribution</span>
+                    <span class="chart-badge">Volume Share</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="outcomeDonutChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row 2: Hourly Density & Day of Week -->
+        <div class="charts-row-equal">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span class="chart-title">Hourly Booking Density & No-Shows</span>
+                    <span class="chart-badge">Capacity Peak Analysis</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="hourlyDensityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span class="chart-title">Weekly Appointment Distribution</span>
+                    <span class="chart-badge">Monday - Saturday</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="dowChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Utilization Table -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <span class="chart-title">Doctor Consultation Load & Wait Performance</span>
+                <span class="chart-badge">SQL Live View</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Physician</th>
+                            <th>Department</th>
+                            <th>Scheduled Load</th>
+                            <th>Completed</th>
+                            <th>Fulfillment %</th>
+                            <th>Avg Wait Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctor-table-body">
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading doctor performance data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            AI-HMS Hospital Management System • Week 2 Operational Intelligence Layer • PostgreSQL 18 & FastAPI
+        </footer>
+    </div>
+
+    <script>
+        let currentToken = "";
+        let deptChartInstance = null;
+        let outcomeChartInstance = null;
+        let hourlyChartInstance = null;
+        let dowChartInstance = null;
+
+        // Initialize & Login
+        async function switchUser(email, password, roleName, btnElement) {
+            if (btnElement) {
+                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
+            try {
+                const res = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                if (!res.ok) throw new Error("Authentication failed");
+                const data = await res.json();
+                currentToken = data.access_token;
+                loadDashboardData();
+            } catch (err) {
+                console.error("Login error:", err);
+            }
+        }
+
+        async function fetchWithAuth(url) {
+            const res = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${currentToken}` }
+            });
+            if (!res.ok) throw new Error(`API error ${res.status}: ${res.statusText}`);
+            return await res.json();
+        }
+
+        async function loadDashboardData() {
+            try {
+                const [overview, waitReport, utilReport, baseline] = await Promise.all([
+                    fetchWithAuth('/api/v1/analytics/overview'),
+                    fetchWithAuth('/api/v1/analytics/waiting-times'),
+                    fetchWithAuth('/api/v1/analytics/utilization'),
+                    fetchWithAuth('/api/v1/analytics/baseline'),
+                ]);
+
+                // 1. Update KPI Cards
+                document.getElementById('kpi-wait-time').innerHTML = `${overview.avg_wait_time_minutes} <span style="font-size: 1rem; color: var(--text-muted);">min</span>`;
+                document.getElementById('kpi-median-wait').innerText = `${overview.median_wait_time_minutes} min`;
+                document.getElementById('kpi-p90-wait').innerText = `${overview.p90_wait_time_minutes} min`;
+
+                document.getElementById('kpi-noshow-rate').innerText = `${overview.no_show_rate_pct}%`;
+                document.getElementById('kpi-noshow-count').innerText = `${overview.no_show_count}`;
+                document.getElementById('kpi-noshow-target').innerText = `${baseline.operational_target_with_ai.projected_no_show_rate_pct}%`;
+
+                document.getElementById('kpi-utilization-rate').innerText = `${overview.slot_utilization_pct}%`;
+                document.getElementById('kpi-completed-count').innerText = `${overview.completed_count}`;
+                document.getElementById('kpi-scheduled-count').innerText = `${overview.scheduled_count}`;
+
+                document.getElementById('kpi-total-volume').innerText = `${overview.total_appointments.toLocaleString()}`;
+                document.getElementById('kpi-cancel-rate').innerText = `${overview.cancellation_rate_pct}%`;
+                document.getElementById('kpi-avg-duration').innerText = `${overview.avg_consultation_duration_minutes} min`;
+
+                // 2. Update Baseline Banner
+                document.getElementById('baseline-cohort-size').innerText = baseline.cohort_sample_size.toLocaleString();
+                document.getElementById('base-noshow-val').innerText = `${baseline.benchmarks.baseline_no_show_rate_pct}%`;
+                document.getElementById('base-wait-val').innerText = `${baseline.benchmarks.baseline_avg_wait_time_minutes} min`;
+
+                // 3. Render Department Wait Times Chart
+                renderDeptWaitChart(waitReport.by_department);
+
+                // 4. Render Outcome Donut Chart
+                renderOutcomeChart(overview);
+
+                // 5. Render Hourly Density Chart
+                renderHourlyChart(utilReport.hourly_distribution);
+
+                // 6. Render Day of Week Chart
+                renderDowChart(utilReport.day_of_week_distribution);
+
+                // 7. Render Doctor Utilization Table
+                renderDoctorTable(utilReport.doctor_utilization, waitReport.by_doctor);
+
+            } catch (err) {
+                console.error("Dashboard render failed:", err);
+            }
+        }
+
+        function renderDeptWaitChart(data) {
+            const ctx = document.getElementById('deptWaitChart').getContext('2d');
+            if (deptChartInstance) deptChartInstance.destroy();
+
+            const labels = data.map(d => d.department);
+            const avgWaits = data.map(d => d.avg_wait_mins);
+            const p90Waits = data.map(d => d.p90_wait_mins);
+
+            deptChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Average Wait (min)',
+                            data: avgWaits,
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderRadius: 6,
+                        },
+                        {
+                            label: 'P90 Wait (min)',
+                            data: p90Waits,
+                            backgroundColor: 'rgba(239, 68, 68, 0.65)',
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function renderOutcomeChart(overview) {
+            const ctx = document.getElementById('outcomeDonutChart').getContext('2d');
+            if (outcomeChartInstance) outcomeChartInstance.destroy();
+
+            outcomeChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'No-Show', 'Cancelled', 'Scheduled'],
+                    datasets: [{
+                        data: [
+                            overview.completed_count,
+                            overview.no_show_count,
+                            overview.cancelled_count,
+                            overview.scheduled_count
+                        ],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.85)',
+                            'rgba(239, 68, 68, 0.85)',
+                            'rgba(245, 158, 11, 0.85)',
+                            'rgba(59, 130, 246, 0.85)',
+                        ],
+                        borderColor: '#111827',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } }
+                    },
+                    cutout: '68%'
+                }
+            });
+        }
+
+        function renderHourlyChart(hourlyData) {
+            const ctx = document.getElementById('hourlyDensityChart').getContext('2d');
+            if (hourlyChartInstance) hourlyChartInstance.destroy();
+
+            const labels = hourlyData.map(h => `${h.hour}:00`);
+            const total = hourlyData.map(h => h.total_booked);
+            const noShows = hourlyData.map(h => h.no_shows);
+
+            hourlyChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Booked',
+                            data: total,
+                            backgroundColor: 'rgba(99, 102, 241, 0.75)',
+                            borderRadius: 6,
+                        },
+                        {
+                            label: 'No-Shows',
+                            data: noShows,
+                            backgroundColor: 'rgba(239, 68, 68, 0.85)',
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function renderDowChart(dowData) {
+            const ctx = document.getElementById('dowChart').getContext('2d');
+            if (dowChartInstance) dowChartInstance.destroy();
+
+            const labels = dowData.map(d => d.day_name.trim());
+            const volume = dowData.map(d => d.total_appointments);
+            const avgWaits = dowData.map(d => d.avg_wait_mins);
+
+            dowChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Appointments Volume',
+                            data: volume,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 4,
+                        },
+                        {
+                            label: 'Avg Wait (mins)',
+                            data: avgWaits,
+                            borderColor: '#06b6d4',
+                            borderDash: [5, 5],
+                            tension: 0.2,
+                            pointRadius: 3,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function renderDoctorTable(doctors, waitData) {
+            const tbody = document.getElementById('doctor-table-body');
+            tbody.innerHTML = '';
+
+            const waitMap = {};
+            waitData.forEach(w => {
+                waitMap[w.doctor_name.trim()] = w.avg_wait_mins;
+            });
+
+            doctors.forEach(doc => {
+                const tr = document.createElement('tr');
+                const initials = doc.doctor_name.split(' ').map(n => n[0]).join('');
+                const wait = waitMap[doc.doctor_name.trim()] || '--';
+
+                tr.innerHTML = `
+                    <td>
+                        <span class="doctor-avatar">${initials}</span>
+                        <strong>${doc.doctor_name}</strong>
+                    </td>
+                    <td><span class="pill">${doc.department}</span></td>
+                    <td>${doc.total_scheduled}</td>
+                    <td>${doc.completed}</td>
+                    <td>
+                        <span style="color: ${doc.utilization_pct > 70 ? 'var(--success)' : 'var(--warning)'}; font-weight: 700;">
+                            ${doc.utilization_pct || 0}%
+                        </span>
+                    </td>
+                    <td><span class="pill" style="color: var(--accent-cyan); font-weight: 600;">${wait} min</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Auto-run on start with Admin role
+        window.addEventListener('DOMContentLoaded', () => {
+            switchUser('admin@hospital.com', 'Admin@123', 'ADMIN', null);
+        });
+    </script>
+</body>
+</html>
